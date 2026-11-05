@@ -134,11 +134,18 @@ def build_activity_fit(result: dict, lang: str = "ar") -> dict:
         "activity": _ACTIVITY_LABELS[key][0 if ar else 1],
         "turnover_txt": f"{turnover:.1f}x" if turnover is not None else "—",
         "range_txt": ("—" if band is None else
-                      f"{"النطاق القطاعي" if ar else "Sector range"}: "
-                      f"{band[0]:g}–{band[1]:g} {"دورة/سنة" if ar else "turns/year"}"),
+                      _sector_range_txt(band, ar)),
         "verdict": verdict,
         "verdict_label": verdict_label,
     }
+
+
+def _sector_range_txt(band: tuple[float, float], ar: bool) -> str:
+    """«النطاق القطاعي: 4–8 دورة/سنة» — hoisted into a helper because
+    python<3.12 rejects nested quotes inside f-string expressions."""
+    head = "النطاق القطاعي" if ar else "Sector range"
+    unit = "دورة/سنة" if ar else "turns/year"
+    return f"{head}: {band[0]:g}–{band[1]:g} {unit}"
 
 
 def _period_hint(result: dict) -> tuple[str, str]:
