@@ -1,6 +1,6 @@
 #!/bin/sh
-# Render web-service start command. Build step = npm ci && npm run build,
-# then this script installs the Python deps and serves the built React app
-# AND the /api from one uvicorn process (backend binds to $PORT).
-pip install -r requirements.txt
-exec gunicorn app.main:app -w 2 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:"${PORT}" --timeout 120 --access-logfile - --error-logfile -
+# Render start command. The build step (npm ci + vite build + pip install)
+# already ran; this script only boots the server on $PORT.
+export PYTHONUNBUFFERED=1
+export MPLBACKEND=Agg
+exec python -m uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}" --timeout-keep-alive 65 --no-access-log
