@@ -189,18 +189,21 @@ def _sales_slowdown_diagnosis(sa: dict) -> str | None:
                 continue
             cands.append((kind, name, egs[len(egs) - 1 - est], egs[-1]))
     cands.sort(key=lambda c: c[3] - c[2])
+    # python<3.12 cannot nest quotes inside an f-string expression — keep the
+    # trailing note in a variable instead
+    neg_note = " — آخر شهر سالب" if negative else ""
 
     if cands:
         kind, name, g_from, g_to = cands[0]
         return (
             f"- تنبيه تباطؤ المبيعات: نمو آخر {streak} أشهر متتالية يتراجع "
-            f"({gs[len(gs) - 1 - streak]}% → {gs[-1]}%{" — آخر شهر سالب" if negative else ""}) "
+            f"({gs[len(gs) - 1 - streak]}% → {gs[-1]}%{neg_note}) "
             f"عبر النافذة {' → '.join(win)}. التشخيص الأكثر ترجيحًا: {kind} «{name}» "
             f"— نموه الشهري تراجع من {g_from}% إلى {g_to}%؛ راجع حساباته/حملاته أولًا."
         )
     return (
         f"- تنبيه تباطؤ المبيعات: نمو آخر {streak} أشهر متتالية يتراجع "
-        f"({gs[len(gs) - 1 - streak]}% → {gs[-1]}%{" — آخر شهر سالب" if negative else ""}) "
+        f"({gs[len(gs) - 1 - streak]}% → {gs[-1]}%{neg_note}) "
         f"عبر النافذة {' → '.join(win)}. لا توجد منطقة أو مندوب واحد مسؤول واضح "
         "— الانخفاض موزّع؛ راجع العوامل العامة (الموسمية، الأسعار، الحملات)."
     )
