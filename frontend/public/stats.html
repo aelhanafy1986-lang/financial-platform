@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>المنصة المالية الذكية — إحصاءات الموقع</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f4f7f8; --panel: #fff; --ink: #0f172a; --muted: #64748b;
+    --line: #e2e8f0; --brand: #0f766e; --brand-soft: #ccfbf1; --danger: #ef4444;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: "Cairo", "Segoe UI", Tahoma, sans-serif;
+    background: linear-gradient(180deg, #f0fdfa 0%, var(--bg) 240px);
+    color: var(--ink); min-height: 100vh;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 20px 48px; }
+  /* language toggle — mirrors the app's topbar control so the brand
+     experience is identical between the SPA and this static page */
+  .lang-toggle { display: flex; justify-content: flex-end; gap: 6px; margin-bottom: 10px; }
+  .lang-toggle button {
+    border: 1px solid var(--line); background: #fff; color: var(--muted);
+    padding: 6px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;
+    font-family: inherit; font-size: 12.5px;
+  }
+  .lang-toggle button.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+  header.hero { text-align: center; margin-bottom: 28px; }
+  header.hero img { width: 92px; height: 92px; border-radius: 24px; box-shadow: 0 10px 30px rgba(15,118,110,.25); }
+  header.hero h1 { margin: 14px 0 4px; font-size: 28px; font-weight: 800; color: var(--brand); }
+  header.hero p { margin: 0; color: var(--muted); font-size: 14px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 26px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 18px;
+    padding: 22px 20px; text-align: center; border-top: 4px solid var(--brand);
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+  }
+  .card .icon { font-size: 26px; }
+  .card .num { font-size: 34px; font-weight: 800; color: var(--brand); direction: ltr; margin: 6px 0 2px; }
+  .card .lbl { color: var(--muted); font-size: 13px; font-weight: 700; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px 22px; margin-bottom: 20px; }
+  .panel h2 { margin: 0 0 12px; font-size: 16px; color: var(--brand); }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: start; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; }
+  td.num { direction: ltr; text-align: end; font-weight: 700; white-space: nowrap; }
+  .empty { color: var(--muted); text-align: center; padding: 18px; }
+  .meta-row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 12.5px; margin-bottom: 18px; }
+  .btn { display: inline-block; background: var(--brand); color: #fff; text-decoration: none;
+    padding: 10px 22px; border-radius: 12px; font-weight: 700; font-size: 14px; margin-top: 6px; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 26px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="lang-toggle" role="group" aria-label="اللغة / Language">
+    <button id="langAr" onclick="setLang('ar')">العربية</button>
+    <button id="langEn" onclick="setLang('en')">English</button>
+  </div>
+
+  <header class="hero">
+    <img src="/logo.svg" alt="" />
+    <h1 data-i18n="brand"></h1>
+    <p data-i18n="sub"></p>
+  </header>
+
+  <div class="meta-row">
+    <span id="since"></span>
+    <span id="lastVisit"></span>
+  </div>
+
+  <section class="cards">
+    <div class="card">
+      <div class="icon">📊</div>
+      <div class="num" id="statAnalyses">—</div>
+      <div class="lbl" data-i18n="statAnalyses"></div>
+    </div>
+    <div class="card">
+      <div class="icon">📘</div>
+      <div class="num" id="statStatements">—</div>
+      <div class="lbl" data-i18n="statStatements"></div>
+    </div>
+    <div class="card">
+      <div class="icon">👁</div>
+      <div class="num" id="statVisits">—</div>
+      <div class="lbl" data-i18n="statVisits"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 data-i18n="recent"></h2>
+    <table id="recentTable" style="display:none">
+      <thead>
+        <tr><th>#</th><th data-i18n="colAnalysis"></th><th data-i18n="colDate"></th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="empty" id="recentEmpty" data-i18n="empty"></div>
+  </section>
+
+  <div style="text-align:center">
+    <a class="btn" href="/" data-i18n="back"></a>
+  </div>
+
+  <footer><span id="year"></span> <span id="footerBrand"></span></footer>
+</div>
+
+<script>
+/* Bilingual brand surface: Arabic is the default; ?lang=en (or the toggle)
+   switches the whole page, so the brand identity never breaks between the
+   SPA's language and this static page. */
+const T = {
+  ar: {
+    title: "المنصة المالية الذكية — إحصاءات الموقع",
+    brand: "المنصة المالية الذكية",
+    sub: "لوحة إحصاءات المنصة — تُحدَّث مباشرة من قاعدة البيانات",
+    statAnalyses: "عمليات تحليل مالي",
+    statStatements: "قوائم مالية أُنشئت",
+    statVisits: "عدد الزيارات للموقع",
+    recent: "🕓 آخر التحليلات",
+    colAnalysis: "التحليل",
+    colDate: "التاريخ",
+    empty: "لا توجد تحليلات بعد",
+    back: "← العودة إلى المنصة",
+    since: "الإحصاءات منذ: ",
+    lastVisit: "آخر زيارة: ",
+    footer: "المنصة المالية الذكية — Smart Financial Platform",
+  },
+  en: {
+    title: "Smart Financial Platform — Site statistics",
+    brand: "Smart Financial Platform",
+    sub: "Platform statistics dashboard — updated live from the database",
+    statAnalyses: "Financial analyses",
+    statStatements: "Statements built",
+    statVisits: "Site visits",
+    recent: "🕓 Latest analyses",
+    colAnalysis: "Analysis",
+    colDate: "Date",
+    empty: "No analyses yet",
+    back: "← Back to the platform",
+    since: "Statistics since: ",
+    lastVisit: "Last visit: ",
+    footer: "Smart Financial Platform — المنصة المالية الذكية",
+  },
+};
+
+let lang = new URLSearchParams(location.search).get("lang") === "en"
+  ? "en"
+  : (localStorage.getItem("sfp_stats_lang") === "en" ? "en" : "ar");
+let lastData = null;
+
+function setLang(l) {
+  lang = l;
+  try { localStorage.setItem("sfp_stats_lang", l); } catch {}
+  apply();
+}
+
+function apply() {
+  const t = T[lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  document.title = t.title;
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const k = el.dataset.i18n;
+    if (t[k] != null) el.textContent = t[k];
+  });
+  document.getElementById("langAr").classList.toggle("active", lang === "ar");
+  document.getElementById("langEn").classList.toggle("active", lang === "en");
+  document.getElementById("footerBrand").textContent = t.footer;
+  if (lastData) render(lastData);
+}
+
+function fmt(n) { return new Intl.NumberFormat("en-US").format(n || 0); }
+function fmtDate(iso) {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleString(lang === "ar" ? "ar" : "en-GB",
+      { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  } catch { return iso; }
+}
+function render(d) {
+  lastData = d;
+  const t = T[lang];
+  document.getElementById("statAnalyses").textContent = fmt(d.analyses_count);
+  document.getElementById("statStatements").textContent = fmt(d.statements_count);
+  document.getElementById("statVisits").textContent = fmt(d.visits);
+  document.getElementById("since").textContent = t.since + fmtDate(d.since);
+  document.getElementById("lastVisit").textContent = t.lastVisit + fmtDate(d.last_visit);
+  const tbody = document.querySelector("#recentTable tbody");
+  const rows = (d.recent || []);
+  if (rows.length) {
+    document.getElementById("recentTable").style.display = "";
+    document.getElementById("recentEmpty").style.display = "none";
+    tbody.innerHTML = rows.map((r, i) =>
+      "<tr><td class='num'>" + (i + 1) + "</td><td>" + r.name + "</td><td class='num'>" + fmtDate(r.date) + "</td></tr>"
+    ).join("");
+  }
+}
+document.getElementById("year").textContent = new Date().getFullYear();
+apply();
+fetch("/api/public/stats").then(r => r.json()).then(render).catch(() => {});
+</script>
+</body>
+</html>

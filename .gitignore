@@ -1,0 +1,54 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+node_modules/
+dist/
+financial.db
+app.db
+*.db
+
+# secrets — never publish
+ai_key.txt
+app/ai_key.txt
+project-id
+
+# tool/messy temp dirs
+.freebuff/
+TEMP/
+_knowledge_src/
+chrome-profile/
+
+# scratch probes and ad-hoc artifacts used during development
+_probe*
+_pg_*
+_v2_*
+_t.pdf
+_t.pptx
+_t_sales.*
+deck-*.pptx
+nouveau*.*
+rapport*.pdf
+v3-*.pdf
+v3-*.pptx
+v4-*.pptx
+order_check.pdf
+_dash93.json
+_fin93.json
+_new_ratio_page.png
+_pdfview*
+
+# generated artifacts
+uploads/
+reports/
+backups/
+backend.log
+frontend.log
+supervisor.log
+vite.log
+.pytest_cache/
+.pytest_tmp/
+preview-reset.html
+preview.html
+order_check.pdf
+.DS_Store

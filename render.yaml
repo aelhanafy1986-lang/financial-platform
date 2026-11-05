@@ -1,0 +1,19 @@
+# Render Blueprint: one web service serving the built React app + /api
+# from a single gunicorn/uvicorn process. Data is intentionally ephemeral
+# for now (DB/uploads/reports live on the instance disk and reset on
+# redeploy — see DECISION note below).
+services:
+  - type: web
+    name: financial-platform
+    runtime: python
+    plan: free
+    # npm ci + vite build need Node; the Python runtime includes it.
+    # nodeVersion is not set here so Render provisions a compatible one.
+    buildCommand: cd frontend && npm ci && npm run build && cd .. && pip install -r requirements.txt
+    startCommand: ./start.sh
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: SMTP_HOST
+        sync: false      # fill in the dashboard when e-mail delivery is wanted
